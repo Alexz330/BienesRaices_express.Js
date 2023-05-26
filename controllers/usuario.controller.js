@@ -56,6 +56,22 @@ export const registrar = async (req, res) => {
     });
   }
 
+  // Verficar que el usuario no este duplicado
+  const existeUsuario = await Usuario.findOne({
+    where: { email: req.body.email },
+  });
+
+  if (existeUsuario) {
+    return res.render("auth/registro", {
+      pagina: "Crar Cuenta",
+      errores: [{ msg: "El usuario ya esta registrado" }],
+      usuario: {
+        nombre: req.body.nombre,
+        email: req.body.email,
+      },
+    });
+  }
   const usuario = await Usuario.create(req.body);
   res.json(usuario);
+  return;
 };
