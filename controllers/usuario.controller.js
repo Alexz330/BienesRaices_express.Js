@@ -21,6 +21,8 @@ export const formularioOlividePassword = (req, res) => {
 };
 
 export const registrar = async (req, res) => {
+  const { nombre, email, password } = req.body;
+
   //Validacion
   await check("nombre")
     .notEmpty()
@@ -34,15 +36,12 @@ export const registrar = async (req, res) => {
     .withMessage("El password debe de eser de al menos 6 caracteres")
     .run(req);
   await check("repetir_password")
-    .equals(req.body.password)
+    .equals(password)
     .withMessage("Los passwords no son iguales")
     .run(req);
-  // await check("repetir_password")
-  //   .equals("password")
-  //   .withMessage("Los Passwords no son iguales")
-  //   .run(req);
 
   let resultado = validationResult(req);
+
   // Verificar que el resultado este vacio
   console.log(req.body, resultado.array());
   if (!resultado.isEmpty()) {
@@ -50,15 +49,15 @@ export const registrar = async (req, res) => {
       pagina: "Crar Cuenta",
       errores: resultado.array(),
       usuario: {
-        nombre: req.body.nombre,
-        email: req.body.email,
+        nombre,
+        email,
       },
     });
   }
 
   // Verficar que el usuario no este duplicado
   const existeUsuario = await Usuario.findOne({
-    where: { email: req.body.email },
+    where: { email: email },
   });
 
   if (existeUsuario) {
@@ -66,8 +65,8 @@ export const registrar = async (req, res) => {
       pagina: "Crar Cuenta",
       errores: [{ msg: "El usuario ya esta registrado" }],
       usuario: {
-        nombre: req.body.nombre,
-        email: req.body.email,
+       nombre,
+       email,
       },
     });
   }
