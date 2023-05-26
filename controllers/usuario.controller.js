@@ -70,7 +70,13 @@ export const registrar = async (req, res) => {
       },
     });
   }
-  const usuario = await Usuario.create(req.body);
+
+  //Almacenar un usuario
+  const usuario = await Usuario.create({
+    nombre,
+    email,
+    password,
+  });
   res.json(usuario);
   return;
 };
