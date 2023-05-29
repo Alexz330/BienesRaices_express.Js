@@ -22,6 +22,15 @@ export const formularioOlividePassword = (req, res) => {
   });
 };
 
+
+// Funcion que comprueba una cuenta
+export const confirmar = (req,res) =>{
+  const {token} = req.params;
+
+  console.log(token);
+  console.log("comprobando...")
+};
+
 export const registrar = async (req, res) => {
   const { nombre, email, password } = req.body;
 
