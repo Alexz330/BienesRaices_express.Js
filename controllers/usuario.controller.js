@@ -1,4 +1,6 @@
 import { check, validationResult } from "express-validator";
+import { generarId } from "../helpers/tokens.js";
+
 
 import Usuario from "../models/Usuario.js";
 
@@ -26,7 +28,7 @@ export const registrar = async (req, res) => {
   //Validacion
   await check("nombre")
     .notEmpty()
-    .withMessage("El nombre nno puede ir vacio")
+    .withMessage("El nombre no puede ir vacio")
     .run(req);
 
   await check("email").isEmail().withMessage("Eso no parece un email").run(req);
@@ -76,7 +78,8 @@ export const registrar = async (req, res) => {
     nombre,
     email,
     password,
+    token: generarId()
   });
   res.json(usuario);
-  return;
+
 };
