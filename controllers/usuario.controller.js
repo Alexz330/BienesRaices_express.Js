@@ -13,6 +13,7 @@ export const formularioLogin = (req, res) => {
 export const formularioRegistro = (req, res) => {
   res.render("auth/registro", {
     pagina: "Crear Cuenta",
+    csrfToken:req.csrfToken()
   });
 };
 
@@ -75,6 +76,7 @@ export const registrar = async (req, res) => {
     return res.render("auth/registro", {
       pagina: "Crar Cuenta",
       errores: resultado.array(),
+      csrfToken:req.csrfToken(),
       usuario: {
         nombre,
         email,
@@ -91,6 +93,7 @@ export const registrar = async (req, res) => {
     return res.render("auth/registro", {
       pagina: "Crar Cuenta",
       errores: [{ msg: "El usuario ya esta registrado" }],
+      csrfToken:req.csrfToken(),
       usuario: {
         nombre,
         email,
@@ -105,14 +108,18 @@ export const registrar = async (req, res) => {
     password,
     token: generarId(),
   });
+
+  // Envio de correo de confirmacion
   emailRegistro({
     nombre: usuario.nombre,
     email: usuario.email,
     token: usuario.token,
   });
+  
   //Mostrar mensage de confirmacion
   res.render("templates/mensaje", {
     pagina: "Cuenta creada Correctamente",
+
     mensaje: "Hemos Enviado un Email de confirmacion, presiona el enlace",
   });
 };
