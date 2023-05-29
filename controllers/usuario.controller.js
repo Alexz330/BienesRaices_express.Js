@@ -80,6 +80,11 @@ export const registrar = async (req, res) => {
     password,
     token: generarId()
   });
-  res.json(usuario);
+
+  //Mostrar mensage de confirmacion
+  res.render("templates/mensaje",{
+    pagina:"Cuenta creada Correctamente",
+    mensaje:"Hemos Enviado un Email de confirmacion, presiona el enlace"
+  })
 
 };
