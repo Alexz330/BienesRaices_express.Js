@@ -22,13 +22,29 @@ export const formularioOlividePassword = (req, res) => {
   });
 };
 
-
 // Funcion que comprueba una cuenta
-export const confirmar = (req,res) =>{
-  const {token} = req.params;
+export const confirmar = async (req, res) => {
+  const { token } = req.params;
 
-  console.log(token);
-  console.log("comprobando...")
+
+  // Verificar si el token es valido
+  const usuario = await Usuario.findOne({where:{token}})
+  if(!usuario){
+    return res.render("auth/confirmar-cuenta",{
+      pagina: "Error al confirmar cuenta",
+      mensaje: "Hubo un error al confirmar tu cuenta, intenta de nuevo",
+      error:true
+    })
+  }
+  // confirmar la cuenta
+  usuario.token = null
+  usuario.confirmado = true;
+  await usuario.save();
+
+  res.render("auth/confirmar-cuenta",{
+    pagina: "Cuenta Confirmada!",
+    mensaje: "La cuenta se confirmó Correctamente",
+  })
 };
 
 export const registrar = async (req, res) => {
@@ -76,8 +92,8 @@ export const registrar = async (req, res) => {
       pagina: "Crar Cuenta",
       errores: [{ msg: "El usuario ya esta registrado" }],
       usuario: {
-       nombre,
-       email,
+        nombre,
+        email,
       },
     });
   }
@@ -87,17 +103,16 @@ export const registrar = async (req, res) => {
     nombre,
     email,
     password,
-    token: generarId()
+    token: generarId(),
   });
   emailRegistro({
-    nombre:usuario.nombre,
-    email:usuario.email,
-    token:usuario.token
-  })
+    nombre: usuario.nombre,
+    email: usuario.email,
+    token: usuario.token,
+  });
   //Mostrar mensage de confirmacion
-  res.render("templates/mensaje",{
-    pagina:"Cuenta creada Correctamente",
-    mensaje:"Hemos Enviado un Email de confirmacion, presiona el enlace"
-  })
-
+  res.render("templates/mensaje", {
+    pagina: "Cuenta creada Correctamente",
+    mensaje: "Hemos Enviado un Email de confirmacion, presiona el enlace",
+  });
 };
