@@ -1,6 +1,6 @@
 import { check, validationResult } from "express-validator";
 import { generarId } from "../helpers/tokens.js";
-import { emailRegistro } from "../helpers/email.js";
+import { emailOlvidePassword, emailRegistro } from "../helpers/email.js";
 
 import Usuario from "../models/Usuario.js";
 
@@ -13,39 +13,88 @@ export const formularioLogin = (req, res) => {
 export const formularioRegistro = (req, res) => {
   res.render("auth/registro", {
     pagina: "Crear Cuenta",
-    csrfToken:req.csrfToken()
+    csrfToken: req.csrfToken(),
   });
 };
 
 export const formularioOlividePassword = (req, res) => {
   res.render("auth/olvide-password", {
+    csrfToken: req.csrfToken(),
     pagina: "Recupera tu acceso a Bienes Raices",
   });
 };
+
+export const resetPassword = async (req, res) => {
+  await check("email").isEmail().withMessage("Eso no parece un email").run(req);
+
+  let resultado = validationResult(req);
+
+  // Verufcar que el usarui este vacio
+  if (!resultado.isEmpty())
+    return res.render("auth/olvide-password", {
+      pagina: "Recupera tu acceso a Bienes Raices",
+      csrfToken: req.csrfToken(),
+      errores: resultado.array(),
+    });
+
+  // Buscar el usuario
+  const { email } = req.body;
+
+  const usuario = await Usuario.findOne({ where: { email } });
+  if (!usuario)
+    return res.render("auth/olvide-password", {
+      pagina: "Recupera tu acceso a Bienes Raices",
+      csrfToken: req.csrfToken(),
+      errores: [{ msg: "El Email no Pertenece a ningun usuario" }],
+    });
+
+  usuario.token = generarId();
+  await usuario.save();
+
+  emailOlvidePassword({
+    email,
+    nombre: usuario.nombre,
+    token: usuario.token,
+  });
+
+  res.render("templates/mensaje",{
+    pagina:"Reestablece tu Password",
+    mensaje:"Hemos enviado un email con las instrucciones"
+  })
+};
+
+export const comprobarToken = async (req, res) => {
+  const { token } = req.params;
+
+  const usuario =  await Usuario.findOne({
+    where:{token}
+  })
+};
+
+export const nuevoPassword = (req, res) => {};
 
 // Funcion que comprueba una cuenta
 export const confirmar = async (req, res) => {
   const { token } = req.params;
 
-
   // Verificar si el token es valido
-  const usuario = await Usuario.findOne({where:{token}})
-  if(!usuario){
-    return res.render("auth/confirmar-cuenta",{
+  const usuario = await Usuario.findOne({ where: { token } });
+  if (!usuario) {
+    return res.render("auth/confirmar-cuenta", {
       pagina: "Error al confirmar cuenta",
       mensaje: "Hubo un error al confirmar tu cuenta, intenta de nuevo",
-      error:true
-    })
+      error: true,
+    });
   }
   // confirmar la cuenta
-  usuario.token = null
+  usuario.token = null;
   usuario.confirmado = true;
   await usuario.save();
 
-  res.render("auth/confirmar-cuenta",{
+  res.render("auth/confirmar-cuenta", {
     pagina: "Cuenta Confirmada!",
     mensaje: "La cuenta se confirmó Correctamente",
-  })
+  });
 };
 
 export const registrar = async (req, res) => {
@@ -76,7 +125,7 @@ export const registrar = async (req, res) => {
     return res.render("auth/registro", {
       pagina: "Crar Cuenta",
       errores: resultado.array(),
-      csrfToken:req.csrfToken(),
+      csrfToken: req.csrfToken(),
       usuario: {
         nombre,
         email,
@@ -93,7 +142,7 @@ export const registrar = async (req, res) => {
     return res.render("auth/registro", {
       pagina: "Crar Cuenta",
       errores: [{ msg: "El usuario ya esta registrado" }],
-      csrfToken:req.csrfToken(),
+      csrfToken: req.csrfToken(),
       usuario: {
         nombre,
         email,
@@ -115,7 +164,7 @@ export const registrar = async (req, res) => {
     email: usuario.email,
     token: usuario.token,
   });
-  
+
   //Mostrar mensage de confirmacion
   res.render("templates/mensaje", {
     pagina: "Cuenta creada Correctamente",
