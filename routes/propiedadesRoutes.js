@@ -1,1 +1,3 @@
-admi
+export const admin = ()=>{
+
+};
