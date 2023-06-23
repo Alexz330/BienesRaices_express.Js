@@ -1,5 +1,5 @@
-import express from "express";
-import {admin} from "../controllers/propiedades.controller.js"
-const router = express.Router();
-
-router.get("/mis-propiedades",admin)
+export const admin = (req,res)=>{
+    res.render("propiedades/admin",{
+        pagina:"Mis propiedades"
+    })
+};
