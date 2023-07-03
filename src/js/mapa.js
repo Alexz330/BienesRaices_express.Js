@@ -12,5 +12,14 @@
         autoPan:true
     })
     .addTo(map)
+
+    // Detectar el moviento del pin
+
+    marker.on(function(e){
+        marker = e.target
+        const posicion = marker.getLatLng();
+
+        console.log(posicion);
+    })
 })()
 
