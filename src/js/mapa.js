@@ -30,6 +30,15 @@
         geocoderService.reverse().latlng(posicion,13).run(function (err, resultado){
             
             marker.bindPopup(resultado.address.LongLabel)
+
+            // Lenar los campose
+            document.querySelector(".calle").textContent =  resultado?.address?.Address ?? "";
+            document.querySelector("#calle").value =  resultado?.address?.Address ?? "";
+            document.querySelector("#lat").value =  resultado?.latlng?.lat ?? "";
+            document.querySelector("#lng").value =  resultado?.latlng?.lgn ?? "";
+
+
+
         })
     })
 })()
