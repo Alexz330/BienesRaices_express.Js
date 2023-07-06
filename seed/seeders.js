@@ -1,5 +1,7 @@
 import Categoria from "../models/Categoria.js";
 import categorias from "./categorias.js";
+import Precio from "../models/Precio.js";
+import precios from "./precios.js";
 import db from "../config/db.js";
 const importarDatos = async () =>{
     try {
@@ -8,7 +10,7 @@ const importarDatos = async () =>{
         //Generar la columnas
         await db.sync();
         //Insertamos los datos
-        await Categoria.bulkCreate(categorias);
+        await Promise.all([Categoria.bulkCreate(categorias),Precio.bulkCreate(precios)]);
         console.log("Datos importados Correctamente");
         process.exit();
          
