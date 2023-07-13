@@ -10,7 +10,9 @@
     "css": "postcss public/css/tailwind.css -o public/css/app.css --watch",
     "js": "webpack --watch",
     "dev":"concurrently \"npm run css\" \"npm run js\" ",
-    "db:importar":"node ./seed/seeders.js -i"
+    "db:importar":"node ./seed/seeders.js -i",
+    "db:eliminar":"node ./seed/seeders.js -e"
+
   },
   "author": "",
   "license": "ISC",

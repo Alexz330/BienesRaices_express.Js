@@ -14,21 +14,21 @@ const Propiedad =  db.define('propiedades',{
         allowNull:false,
     },
     descripcion:{
-        tpye: DataTypes.TEXT,
+        type: DataTypes.TEXT,
         allowNull:false
     },
     habitaciones:{
-        tpye:DataTypes.INTEGER,
+        type:DataTypes.INTEGER,
         allowNull:false
 
     },
     estacionamiento:{
-        tpye:DataTypes.INTEGER,
+        type:DataTypes.INTEGER,
         allowNull:false
 
     },
     wc:{
-        tpye:DataTypes.INTEGER,
+        type:DataTypes.INTEGER,
         allowNull:false
 
     },
@@ -38,7 +38,7 @@ const Propiedad =  db.define('propiedades',{
         allowNull:false,
     },
     lat:{
-        tpye:DataTypes.STRING,
+        type:DataTypes.STRING,
         allowNull:false
     },
     lng:{
