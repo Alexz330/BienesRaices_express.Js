@@ -22,12 +22,13 @@ export const crear = async (req,res)=>{
     res.render("propiedades/crear",{
         pagina:"Crear Propiedad",
         barra:true,
+        csrfToken:req.csrfToken(),
         categorias,
         precios
     })
 };
 
-export const guardar =  async (req,res) =>{
+export const  guardar =  async (req,res) =>{
     //Validacion
     let resultado = validationResult(req);
 

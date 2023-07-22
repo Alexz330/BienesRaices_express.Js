@@ -7,9 +7,10 @@ const router = express.Router();
 
 router.get("/mis-propiedades",admin);
 router.get("/propiedades/crear", crear);
-router.get("/propiedades/crear",
-    body("titulo").notEmpty().withMessage("El Titulo del Anuncio es Obligatorio")
-    , guardar);
+router.post("/propiedades/crear",
+    body("titulo").notEmpty().withMessage("El Titulo del Anuncio es Obligatorio"),
+    body("descripcion").notEmpty().withMessage("La descripcion no puede ir vacia"),
+    guardar);
 
 
 export default router;
